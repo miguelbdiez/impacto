@@ -1,0 +1,71 @@
+{
+  "model": "model 2",
+  "trained": "2026-10-22",
+  "data": "reviews_es_train.csv after ASCII normalisation (D-008); input: review_body only",
+  "network": "sequence 128, vocabulary 20000 (min. frequency 1), embedding 64, 1 attention layer (4 heads), average pooling, dense 64 ReLU, softmax 3",
+  "training": "Adam, learning rate 0.001, batch 64, no regularisation, 7 epochs (fixed), NVIDIA CUDA",
+  "summary": {
+    "Epochs number": "7",
+    "Elapsed time": "00:00:42",
+    "Stopping criterion": "Maximum epochs number",
+    "Training error": "0.751",
+    "Validation error": "0.827"
+  },
+  "best_validation_epoch": 5,
+  "best_validation_error": 0.827,
+  "testing_accuracy": 0.6283,
+  "recall": {
+    "bad": 0.6365,
+    "good": 0.6857,
+    "neutral": 0.5628
+  },
+  "precision": {
+    "bad": 0.6735,
+    "good": 0.7198,
+    "neutral": 0.5104
+  },
+  "confusion_matrix_testing": {
+    "labels": [
+      "bad",
+      "good",
+      "neutral"
+    ],
+    "rows_actual_columns_predicted": [
+      [
+        1273,
+        144,
+        583
+      ],
+      [
+        133,
+        1372,
+        496
+      ],
+      [
+        484,
+        390,
+        1125
+      ]
+    ]
+  },
+  "history": {
+    "training_error": [
+      0.956,
+      0.865,
+      0.822,
+      0.795,
+      0.77,
+      0.751,
+      0.733
+    ],
+    "validation_error": [
+      0.901,
+      0.876,
+      0.855,
+      0.845,
+      0.83,
+      0.827,
+      0.828
+    ]
+  }
+}

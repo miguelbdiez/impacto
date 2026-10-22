@@ -1,0 +1,17 @@
+# Datasets are not redistributed (see docs/dataset.md)
+data/
+
+# Neural Designer projects: their reports include review texts (see docs/neural-designer.md)
+*.nd
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

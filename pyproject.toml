@@ -1,0 +1,19 @@
+[project]
+name = "impacto"
+version = "0.1.0"
+description = "Review sentiment monitoring: scraping, text classification with Neural Designer / OpenNN and a Power BI dashboard."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2",
+]
+
+[dependency-groups]
+analysis = [
+    "h5py>=3.11",
+    "scikit-learn>=1.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
