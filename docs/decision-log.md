@@ -398,6 +398,61 @@ enthusiastic 85%, short 88%.
 
 ---
 
+## D-012 · Application: Streamlit app + Power BI dashboard
+
+- **Date:** 2026-10-23
+- **Status:** Accepted (updates D-006)
+
+**Context.** The app works like this: the user types the name of a business (e.g. *El Tormes Mall*, a shopping
+centre in Salamanca), the app collects its reviews, classifies them with the model and shows charts and statistics.
+A Power BI report only reads data, so it cannot start the collection for a new business from a text box.
+
+**Decision.**
+- **Streamlit** web app (Python, runs in Docker) for the search box, on-demand collection and charts. This is what
+  anyone cloning the repository will use.
+- **Power BI Desktop** connected to the same database (DirectQuery + automatic page refresh, D-006) as an analysis
+  dashboard for the businesses being tracked, which are re-collected at a configurable interval.
+- Until OpenNN inference is ready, the app uses the TF-IDF baseline as a stand-in model behind the same interface.
+
+**Alternatives considered.** Streamlit only (simpler, but drops the Power BI learning goal). Power BI only (no
+search box: businesses would be listed in a configuration file).
+
+---
+
+## D-013 · Review collection: own scraper with Playwright
+
+- **Date:** 2026-10-23
+- **Status:** Accepted
+
+**Options evaluated.**
+
+| Option | Reviews | Cost | Notes |
+|---|---|---|---|
+| Google Places API (official) | 5 per place at most | Free quota | Allowed, but useless for statistics |
+| Scraping service (Apify, Outscraper, SerpApi) | All | Free tiers of ~500–10,000 reviews per month | The provider does the scraping; stable |
+| Own scraper with Playwright (automated browser) | All | Free | Against Google's terms of service; breaks when the page changes; most learning |
+
+**Decision.** Own scraper with Playwright. The author wants to learn web scraping hands-on, which is part of the
+project's goal.
+
+**Consequences and safeguards.**
+- **Terms of service:** Google does not allow automated access to Maps. The README states that the scraper is for
+  educational purposes and that whoever runs it is responsible for complying with the terms of the site.
+- **Privacy (GDPR):** only public data is collected, without login. Author names, photos and profile links are never
+  stored: only rating, date, text and whether the owner replied (D-001).
+- **Low load:** small volumes, pauses between actions, results cached in the database so each review is
+  downloaded once.
+- **Fragility:** the CSS selectors live in a single module, so a change in Google's page is fixed in one place.
+  Tests run against saved HTML pages.
+- The collector sits behind an interface, so a service such as Apify could be added later without touching the rest.
+
+**Update (2026-10-23): fallback and priority.** If scraping proves unworkable, the reviews will be loaded from a CSV
+with the same format and passed through the app; only the collection step changes. For this portfolio project the
+way the data is obtained matters less than training the model well, running inference and interpreting the results.
+The OpenNN inference therefore goes first, before the scraper.
+
+---
+
 ## Open questions
 
 - Exact Neural Designer export format for text classification models and how to load it in OpenNN (D-003).
