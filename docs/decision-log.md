@@ -578,6 +578,50 @@ AGPL as well.
 
 ---
 
+## D-017 · Collecting the reviews: Apify free plan
+
+- **Date:** 2026-10-23
+- **Status:** Proposed (pending the author's confirmation)
+
+**Context.** The exploration (D-013 update) showed that without a Google account Maps only shows 5 reviews. The
+author does not want to pay anything for a portfolio project.
+
+**Free options evaluated.**
+
+| Option | Reviews | Risk |
+|---|---|---|
+| Own scraper, no account | 5 per place | Useless for statistics |
+| Own scraper with a signed-in (secondary) Google account | All, exact dates | Highest: automating an account is what Google polices first (account blocked, CAPTCHAs); anyone cloning the repo would need their own account |
+| Apify free plan ($0, no card, ~$5 of credit per month) | All, exact dates | The provider does the collection; we only handle the data |
+| Official APIs (Google Places, TripAdvisor, Yelp, Foursquare) | 3–5 per place, or paid | — |
+| Google Business Profile API | All | Only for the owner or manager of the listing |
+
+**Legal notes** (general information, not legal advice).
+- In Spain this is not a crime in itself. It breaches Google's terms, a contract: the Google Maps additional terms
+  forbid copying the content and "mass download or create bulk feeds of the content". The usual consequence is
+  losing access or the account.
+- It could become unlawful by bypassing security measures (CAPTCHAs, blocks; art. 197 bis of the Spanish Criminal
+  Code), by mishandling personal data (GDPR: author names and profiles), or by republishing the review texts
+  (authors' copyright and Google's database right against substantial extraction).
+- A non-commercial portfolio lowers the risk but does not remove it, and the project is public under the author's
+  name. Using Apify does not move the responsibility for how the data is used.
+
+**Proposal.**
+1. **Full history once** with an Apify Google Maps reviews actor: the ~10,000 most recent reviews with the official
+   actor (~$0.50 per 1,000), or all 11,017 with a cheaper one. Prices to be confirmed on the actor's page.
+2. **Daily update** of new reviews only (actors that sort by newest and stop at a start date or at already
+   downloaded reviews). About 600 reviews a month, around $0.30, within the free credit. Hourly checks are not
+   justified: El Tormes receives a few reviews a day.
+3. **Safeguards:** the importer drops author names, photos and profile links. The dashboard shows aggregated
+   statistics and short excerpts, never the full set of texts. CAPTCHAs or blocks are never bypassed.
+4. The Apify token lives in `.env` (git-ignored), never in the code or the chat.
+5. A first test with ~50 reviews before the full download.
+
+The signed-in Google account option was proposed by the author (hourly updates) and is not recommended, for the
+reasons above.
+
+---
+
 ## Ideas for later
 
 - **Bad reviews vs. construction works (El Tormes).** Plot the share of bad reviews over time and mark the periods
