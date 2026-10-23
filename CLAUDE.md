@@ -7,7 +7,7 @@
 - The author develops **Neural Designer**, the desktop ML application built on the **OpenNN** C++ library, and uses
   this project as its showcase. Training happens in the Neural Designer app on purpose (screenshots, architecture
   image), even though OpenNN alone could do it.
-- Pipeline: scrape the reviews of a business → classify each one as Good / Neutral / Bad → Power BI dashboard
+- Pipeline: scrape the reviews of a business → classify each one as Good / Bad → Power BI dashboard
   refreshed at a configurable interval → everything in Docker.
 - The model is trained in Neural Designer. Predictions will run with OpenNN, compiled inside the Docker image instead
   of shipping the heavy Neural Designer engine.
@@ -37,22 +37,32 @@ Not in the repository:
 - `data/`: regenerated with the commands above.
 - `impacto.nd` (Neural Designer project): copy it by other means, or recreate it following
   `docs/neural-designer.md`. Inspect any saved project with `training/inspect_nd.py`.
+- `models/` (the frozen project `impacto_model_c.nd` and the exported model): copy by hand, then rebuild the
+  predictor as described in `docs/inference.md`.
 - Neural Designer: proprietary; the author has the sources and the installed application.
 - OpenNN: https://github.com/Artelnics/opennn
 
 ## Status (update when it changes)
 
-Last update: 2026-10-22.
+Last update: 2026-10-23.
 
 - Done:
   - Training dataset and ASCII normalisation.
-  - Models 1 and 2: 62.8% testing accuracy on 3 classes. Results in `training/results/`.
-  - Baseline: 65.8% with 18k training reviews, 68.0% with 72k.
-- Waiting: the author is fixing a Neural Designer bug. Column roles and some training settings were not persisted
-  in the saved project (details in D-009).
+  - Models 1 and 2 (3 classes): 62.8% testing accuracy, against a 65.8% baseline. Results in `training/results/`.
+  - Back to 2 classes (Good / Bad, D-002 update). New baseline: 88.2% with 12k training reviews, 90.0% with 48k.
+  - Domain shift measured (D-011): the Amazon baseline gets 90.4% on real hotel reviews and 73.8% on synthetic
+    bar reviews (sarcasm is the weak spot).
+  - The Neural Designer bug that lost column roles and settings is fixed.
+  - Binary runs in Neural Designer (D-014): A 84.8%, B 88.6%, C 88.4%. Selected model: C (40k reviews per class, no
+    attention), frozen in `models/impacto_model_c.nd` (git-ignored; copy it by hand to another computer).
+  - App decided: Streamlit + Power BI (D-012). Scraper decided: own Playwright scraper (D-013). The author asked
+    to wait before building the scraper.
+  - Inference with OpenNN works (D-015, `docs/inference.md`): same AUC as Neural Designer, 88.5% on the hold-out
+    set. Exported model in `models/model_c/` (git-ignored), predictor built in `build/inference/`.
+  - Decision threshold 0.44 (D-015). Licence AGPL-3.0-only, required by OpenNN (D-016); the app must link to its
+    source code.
 - Next:
-  1. Experiments listed in D-010 (40k reviews per class, L2 regularisation, network without attention).
-  2. Inference with OpenNN.
-  3. Scraper, with its source and legal terms still to be decided.
-  4. Database and Power BI dashboard.
-  5. Docker.
+  1. Collect business reviews: Playwright scraper (D-013) or, as a fallback, a CSV. Exact review dates are needed
+     (see "Ideas for later" in the decision log).
+  2. Database, Streamlit app and Power BI dashboard.
+  3. Docker (OpenNN is compiled from GitHub inside the image).

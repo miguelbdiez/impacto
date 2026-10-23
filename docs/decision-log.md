@@ -566,8 +566,17 @@ AGPL as well.
 
 ---
 
+## Ideas for later
+
+- **Bad reviews vs. construction works (El Tormes).** Plot the share of bad reviews over time and mark the periods
+  of works in the shopping centre (taken from local news). If the bad reviews rise during the works and mention them,
+  it is a real, explainable conclusion for the post. This requires the **exact date** of each review, not Google's
+  relative dates ("hace 2 años").
+
+---
+
 ## Open questions
 
-- Exact Neural Designer export format for text classification models and how to load it in OpenNN (D-003).
-- Data source for the live case study (Google Maps, TripAdvisor…), and the legal/terms-of-service implications of
-  scraping it. To be studied in the scraping phase.
+- Whether to publish the trained model. `models/` is git-ignored for now: the weights and the vocabulary are derived
+  from the Amazon reviews, whose licence does not allow redistributing the data (D-005).
+- Whether Google Maps provides the exact date of each review, needed for the construction-works idea above (D-013).
