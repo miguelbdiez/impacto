@@ -46,3 +46,11 @@ Designer project are not included in the repository (licence); the documentation
 - [Neural Designer project](docs/neural-designer.md): configuration and how to inspect a saved project
 - [Inference with OpenNN](docs/inference.md): export the model, build the predictor and check it
 - [Decision log](docs/decision-log.md): every design decision and why it was taken
+
+## Licence
+
+impacto is free software released under the [GNU Affero General Public License v3.0](LICENSE) (`AGPL-3.0-only`),
+the same licence as [OpenNN](https://github.com/Artelnics/opennn), which it uses for inference.
+
+The datasets are not covered by this licence and are not included in the repository: each one keeps its own terms
+(see [docs/dataset.md](docs/dataset.md)).

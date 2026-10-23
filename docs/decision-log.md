@@ -543,6 +543,29 @@ set) and reproduces Neural Designer. It is stored in `model_info.json` (`--thres
 
 ---
 
+## D-016 · Licence: AGPL-3.0
+
+- **Date:** 2026-10-23
+- **Status:** Accepted
+
+**Context.** The predictor (`inference/predict.cpp`) is linked with OpenNN, which is distributed under the GNU Affero
+General Public License version 3 only (`AGPL-3.0-only`), or under a commercial licence from Artelnics. A program
+built on top of an AGPL library and distributed, or offered to users over a network, has to be released under the
+AGPL as well.
+
+**Decision.** The whole repository is released under `AGPL-3.0-only`: the official text is in `LICENSE`, declared in
+`pyproject.toml` and in the README.
+
+**Consequences.**
+- Anyone may use, study, modify and redistribute the project. Whoever distributes it, or runs a modified version as a
+  service that other people use, must offer them the source code under the same licence.
+- The Streamlit app will show a link to the repository, the usual way to meet the AGPL's network clause (section 13).
+- The licence covers the code only. The datasets keep their own terms and are not included (D-005, D-011). Neural
+  Designer is used only to train and is not distributed with the project.
+- The Python dependencies (pandas, scikit-learn, h5py: BSD) are compatible with the AGPL.
+
+---
+
 ## Open questions
 
 - Exact Neural Designer export format for text classification models and how to load it in OpenNN (D-003).

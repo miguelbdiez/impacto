@@ -3,6 +3,8 @@ name = "impacto"
 version = "0.1.0"
 description = "Review sentiment monitoring: scraping, text classification with Neural Designer / OpenNN and a Power BI dashboard."
 readme = "README.md"
+license = "AGPL-3.0-only"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
     "pandas>=2.2",
