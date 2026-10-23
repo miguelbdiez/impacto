@@ -16,7 +16,7 @@ Status values: **Accepted** (decided), **Proposed** (recommendation pending conf
 GitHub repository, documented in a LinkedIn post.
 
 **Decision.** The user enters the name of a business and gets a dashboard that summarises what people think
-about it (share of good, neutral and bad reviews, evolution over time, etc.). The live case study will use the reviews of a
+about it (share of good and bad reviews, evolution over time, etc.). The live case study will use the reviews of a
 single high-volume business, **anonymised** (no author names or identifiers are stored or published).
 Those reviews are used only to demonstrate the system, **not to train** the model.
 
@@ -25,7 +25,7 @@ text classifier instead of simply averaging stars.
 
 ---
 
-## D-002 · Classification target: good / bad (+ neutral)
+## D-002 · Classification target: good / bad
 
 - **Date:** 2026-10-22
 - **Status:** Accepted, amended the same day to three classes (see update at the end of this entry)
@@ -46,6 +46,15 @@ future goal of classifying forum and social media text, where many messages are 
 *Trade-off.* `Neutral` is the hardest class: 3-star texts mix praise and complaints, so most errors are expected
 between `Neutral` and its neighbours. The confusion matrix will show it. Classes are balanced in the training file
 (10k each) so the model does not simply ignore `Neutral`.
+
+**Update (2026-10-23): back to two classes.** `Good` (4–5 stars) and `Bad` (1–2 stars); 3-star reviews are dropped
+again.
+
+*Why.* The three-class experiments (D-009, D-010) showed that `Neutral` concentrated most errors: the networks
+recognised 49–56% of neutral reviews, and even the baseline only 55–59%. Meanwhile, confusing a good review with a
+bad one happened in just 4–9% of cases. Stars give a reliable label for the two extremes and a noisy one for the
+middle. A binary model is more accurate and easier to explain in the dashboard and the post. The three-class results
+are kept in this log as part of the process.
 
 ---
 
@@ -178,9 +187,9 @@ Only `review_body` is used as input and `sentiment` as target. The rest are set 
   part of the story, and `product_category` allows analysing errors per category.
 - *`stars` must be Unused:* the target is derived from it (data leakage).
 - *`review_title` is not an input:* the model must work on text without a title (Google reviews, social posts).
-- *30,000 balanced reviews (10k per class) by default:* the example shipped with Neural Designer has 1,000 reviews.
-  30k is enough for a solid model with reasonable training time. The script can generate up to ~40k per class
-  (limited by `Neutral`, which comes from a single star level).
+- *10k reviews per class by default:* the example shipped with Neural Designer has 1,000 reviews. 10k per class is
+  enough for a solid model with reasonable training time. With two classes (D-002 update) the file has 20,000
+  reviews, and the script can generate up to ~80k per class.
 - *Separate hold-out file (official test split):* lets us check later that OpenNN, deployed in Docker, reproduces
   the Neural Designer results on reviews neither of them has seen.
 
@@ -333,6 +342,15 @@ same proportions as Neural Designer (60% training, 20% testing).
 2. L2 regularisation 0.001 and minimum token frequency 2, if they are kept in the project.
 3. Remove the attention layer (embedding → average pooling → dense). This simpler model is usually strong for
    sentiment on short texts.
+
+**Update (2026-10-23): baseline with two classes** (D-002 update), same script and proportions:
+
+| Training reviews | Testing accuracy | Hold-out accuracy | Recall bad / good (testing) |
+|---|---|---|---|
+| 12,000 (file with 10k per class) | **88.2%** | 88.6% | 90.2% / 86.1% |
+| 48,000 (file with 40k per class) | **90.0%** | 90.1% | 90.9% / 89.0% |
+
+These are the new figures to beat. The next experiments stay the same.
 
 ---
 

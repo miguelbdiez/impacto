@@ -4,7 +4,7 @@ Steps (explained in docs/dataset.md):
   1. Normalise the text to ASCII (same function used at inference) so the file parses as plain
      tab-separated values and the OpenNN tokenizer keeps every word whole.
   2. Drop empty and duplicated reviews, and training reviews that also appear in the hold-out set.
-  3. Label from the stars: 1-2 -> Bad, 3 -> Neutral, 4-5 -> Good.
+  3. Label from the stars: 1-2 -> Bad, 4-5 -> Good. 3-star reviews are dropped.
   4. Draw a balanced random sample for training. The official test split is kept apart as hold-out.
 
 Outputs (in data/processed/):
@@ -29,7 +29,8 @@ from impacto.text import normalize_text
 COLUMNS = ["review_id", "product_id", "reviewer_id", "product_category", "stars",
            "review_title", "review_body", "sentiment"]
 TEXT_COLUMNS = ["review_title", "review_body"]
-SENTIMENT_BY_STARS = {1: "Bad", 2: "Bad", 3: "Neutral", 4: "Good", 5: "Good"}
+# 3-star reviews mix praise and complaints and are left out (D-002)
+SENTIMENT_BY_STARS = {1: "Bad", 2: "Bad", 4: "Good", 5: "Good"}
 
 
 def load_split(raw_dir: Path, split: str) -> pd.DataFrame:
@@ -40,6 +41,7 @@ def prepare(reviews: pd.DataFrame) -> pd.DataFrame:
     reviews = reviews.assign(**{column: reviews[column].map(normalize_text) for column in TEXT_COLUMNS})
     reviews = reviews[reviews["review_body"] != ""]
     reviews = reviews.drop_duplicates("review_body")
+    reviews = reviews[reviews["stars"].isin(SENTIMENT_BY_STARS.keys())]
 
     return reviews.assign(sentiment=reviews["stars"].map(SENTIMENT_BY_STARS))
 

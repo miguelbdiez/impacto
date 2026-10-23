@@ -1,8 +1,7 @@
 # impacto
 
 **What do people think of a business?** impacto collects the public reviews of a business, classifies each one as
-good, neutral or bad with a text classification model, and shows the results in a dashboard that refreshes
-automatically.
+good or bad with a text classification model, and shows the results in a dashboard that refreshes automatically.
 
 > Work in progress. Portfolio project: machine learning with [Neural Designer](https://www.neuraldesigner.com) and
 > [OpenNN](https://github.com/Artelnics/opennn), data analysis, and dashboards with Power BI.

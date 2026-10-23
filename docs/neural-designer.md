@@ -20,7 +20,7 @@ Current configuration: model 2 plus the changes proposed in D-009 / D-010.
    - Multi-head attention: 1 layer, 4 heads.
    - Sequence pooling: average.
    - Dense: 64 neurons, ReLU.
-   - Classification layer: softmax, 3 outputs.
+   - Classification layer: two classes (`Good` / `Bad`).
 7. **Training strategy:**
    - Loss: cross-entropy, L2 regularisation 0.001.
    - Optimiser: Adam, learning rate 0.001, batch size 64.

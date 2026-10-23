@@ -17,23 +17,19 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import balanced_accuracy_score, confusion_matrix
 
-LABELS = ["Bad", "Good", "Neutral"]
-
 
 def read(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, sep="\t", quoting=3, dtype=str, keep_default_na=False)
 
 
 def report(name: str, actual: pd.Series, predicted: np.ndarray) -> None:
-    matrix = confusion_matrix(actual, predicted, labels=LABELS)
+    labels = sorted(actual.unique())
+    matrix = confusion_matrix(actual, predicted, labels=labels)
     recall = matrix.diagonal() / matrix.sum(axis=1)
-    # Share of Bad / Good reviews predicted as the opposite polarity
-    polarity_errors = (matrix[0, 1] + matrix[1, 0]) / matrix[:2].sum()
+    recalls = ", ".join(f"{label} {value:.1%}" for label, value in zip(labels, recall))
 
     print(f"{name}: {len(actual)} reviews, "
-          f"balanced accuracy {balanced_accuracy_score(actual, predicted):.1%}, "
-          f"recall bad / good / neutral {recall[0]:.1%} / {recall[1]:.1%} / {recall[2]:.1%}, "
-          f"good <-> bad errors {polarity_errors:.1%}")
+          f"balanced accuracy {balanced_accuracy_score(actual, predicted):.1%}, recall {recalls}")
 
 
 def main() -> None:
