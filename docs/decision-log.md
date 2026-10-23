@@ -463,6 +463,18 @@ with the same format and passed through the app; only the collection step change
 way the data is obtained matters less than training the model well, running inference and interpreting the results.
 The OpenNN inference therefore goes first, before the scraper.
 
+**Update (2026-10-23): exploration results.** A guided exploration with a visible browser (Playwright, no Google
+account) on *Centro Comercial El Tormes* (4.2 stars, 11,017 reviews) found:
+- **Without signing in, Google Maps shows a "limited view": only 5 reviews.** Scrolling loads nothing more. Both
+  "Ver más reseñas (11.012)" and the "Ordenar" (sort) button open a sign-in prompt.
+- **The data carries exact dates.** The reviews arrive through an internal request (`batchexecute`, rpc `qv9Egd`)
+  where each review has a timestamp in microseconds (e.g. 2026-01-18 15:59:14 UTC), although the page only shows
+  "Hace 9 meses". The construction-works idea is therefore feasible if the reviews can be obtained.
+- The data captured during the exploration (author names and profiles) was deleted after the analysis.
+
+Consequence: a scraper without an account gets the same 5 reviews as the official Places API. Getting all of them
+requires either automating a signed-in Google account or a service that does the collection. Decision pending.
+
 ---
 
 ## D-014 · Selected model
