@@ -500,6 +500,49 @@ improvement (the best epoch's parameters are restored). Full figures in `trainin
 
 ---
 
+## D-015 · Inference with OpenNN
+
+- **Date:** 2026-10-23
+- **Status:** Accepted (resolves the main risk of D-003); decision threshold pending
+
+**Context.** The Neural Designer deploy package ships the whole application engine, too heavy for the repository.
+The goal was to run the trained model (run C, D-014) with OpenNN alone.
+
+**What a Neural Designer project contains.** The `.nd` file stores the network and its parameters in OpenNN's own
+formats: a network JSON and a binary parameter file with the `OPENNNP` header. The vocabulary is in the project
+configuration (`.ndm`). Run C's network has no tokenizer layer, so the text is tokenised with OpenNN's
+`WordLevelTokenizer` and that vocabulary, and the token ids go straight into the network. The source code confirms
+that this encoding is the one used in training: `[START]`, tokens, `[END]`, zero padding up to 128.
+
+**Implementation** (`docs/inference.md`).
+- `training/export_model.py` extracts `model.json`, `model.bin`, `vocabulary.txt` and `model_info.json` (5.3 MB).
+- `inference/predict.cpp` is a ~100-line C++ program linked with OpenNN, compiled for CPU only. CMake downloads
+  OpenNN from GitHub at the pinned commit `5aa391c`, the version Neural Designer was built with, or uses a local
+  checkout. The executable is 1.3 MB.
+- `src/impacto/model.py` is the Python wrapper used by the app. It normalises the text (D-008), calls the predictor
+  and returns probabilities. Texts without words (reviews with stars only) get no prediction instead of a guess.
+
+**Validation.**
+- **Same model as Neural Designer.** On the project's 16,000 testing samples (`training/check_parity.py`) the area
+  under the ROC curve is 0.9532 in OpenNN and 0.953 in Neural Designer. With the threshold that predicts as many
+  positives as Neural Designer (0.4397), the confusion matrices differ by at most 2 reviews per cell. Neural Designer
+  therefore applies a decision threshold of about 0.44–0.45 (its ROC analysis reports 0.45 as optimal). The last 2
+  reviews are explained by GPU versus CPU arithmetic.
+- **Hold-out set** (3,993 reviews never seen by either tool, `training/evaluate_inference.py`): accuracy 88.5%,
+  AUC 0.955. Predicted in 0.2 s on CPU.
+
+| Threshold | Accuracy | Recall bad | Recall good |
+|---|---|---|---|
+| 0.50 | 88.5% | 90.6% | 86.4% |
+| 0.44 | 88.5% | 88.2% | 88.8% |
+
+**Decision threshold: 0.44** (decided 2026-10-23). It balances both classes (bad 88.2% / good 88.8% on the hold-out
+set) and reproduces Neural Designer. It is stored in `model_info.json` (`--threshold` in the export), not hard-coded.
+
+**Pending (optional).** Compare the probabilities one by one with the Neural Designer deploy package (`--reference`).
+
+---
+
 ## Open questions
 
 - Exact Neural Designer export format for text classification models and how to load it in OpenNN (D-003).

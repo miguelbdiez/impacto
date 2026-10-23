@@ -15,3 +15,9 @@ __pycache__/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Build output (C++ inference)
+build/
+
+# Exported models: not published until decided (licence of the training data)
+models/

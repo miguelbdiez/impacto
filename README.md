@@ -20,8 +20,8 @@ Docker.
 ## Roadmap
 
 - [x] Training dataset: Spanish Amazon reviews ([docs/dataset.md](docs/dataset.md))
-- [ ] Model training in Neural Designer
-- [ ] Inference with OpenNN
+- [x] Model training in Neural Designer
+- [x] Inference with OpenNN ([docs/inference.md](docs/inference.md))
 - [ ] Review scraper and scheduler
 - [ ] Database and Power BI dashboard
 - [ ] Docker deployment
@@ -44,4 +44,5 @@ Designer project are not included in the repository (licence); the documentation
 
 - [Training dataset](docs/dataset.md): source, licence, processing steps and checksums
 - [Neural Designer project](docs/neural-designer.md): configuration and how to inspect a saved project
+- [Inference with OpenNN](docs/inference.md): export the model, build the predictor and check it
 - [Decision log](docs/decision-log.md): every design decision and why it was taken
