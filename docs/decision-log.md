@@ -352,6 +352,18 @@ same proportions as Neural Designer (60% training, 20% testing).
 
 These are the new figures to beat. The next experiments stay the same.
 
+**Neural Designer binary models** (results in `training/results/`). After the author fixed the bug noted in D-009,
+the saved project keeps the column roles, the minimum token frequency and the regularisation. The vocabulary has
+11,477 tokens: the 11,473 words that appear at least twice, as predicted in `docs/dataset.md`, plus 4 control
+tokens. This confirms that our simulation of the OpenNN tokenizer is exact.
+
+| Model | Data | Network | Training | Epochs (best) | Testing accuracy | Recall bad / good |
+|---|---|---|---|---|---|---|
+| 3 | 10k per class | 1 attention layer, 4 heads, dense 64 | L2 0.001, batch 32, 5 epochs max. | 5 (5) | 84.0% | 82.9% / 85.1% |
+
+Model 3 stopped while the validation error was still falling (0.479 → 0.362): it had not converged yet. Next run:
+more epochs with early stopping.
+
 ---
 
 ## D-011 · Domain shift: from product reviews to business reviews
@@ -450,6 +462,41 @@ project's goal.
 with the same format and passed through the app; only the collection step changes. For this portfolio project the
 way the data is obtained matters less than training the model well, running inference and interpreting the results.
 The OpenNN inference therefore goes first, before the scraper.
+
+---
+
+## D-014 · Selected model
+
+- **Date:** 2026-10-23
+- **Status:** Accepted: run C. The project with its trained parameters is frozen as `models/impacto_model_c.nd`
+  (git-ignored). It will also provide the architecture images for the project write-up.
+
+**Runs compared.** All binary, normalised text, body only, sequence 128, minimum token frequency 2, embedding 64,
+dense 64 ReLU + sigmoid output, Adam (learning rate 0.001), L2 0.001, early stopping after 5 epochs without
+improvement (the best epoch's parameters are restored). Full figures in `training/results/binary_runs.json`.
+
+| Run | Data | Network | Epochs (best) | Time | Testing accuracy | Recall bad / good | AUC (95% CI) | Baseline on same file |
+|---|---|---|---|---|---|---|---|---|
+| A | 10k per class, batch 32 | with attention (1 layer, 4 heads) | 16 (11) | 1 s | 84.8% (4,000) | 86.6% / 83.1% | 0.922 (0.915–0.929) | 88.2% |
+| B | 40k per class, batch 64 | with attention (1 layer, 4 heads) | 14 (9) | 6 s | 88.6% (16,000) | 88.3% / 88.8% | 0.956 (0.953–0.958) | 90.0% |
+| C | 40k per class, batch 64 | **without attention** | 22 (17) | 4 s | 88.4% (16,000) | 88.3% / 88.6% | 0.953 (0.950–0.956) | 90.0% |
+
+**Findings.**
+- **More data is what matters:** from 10k to 40k reviews per class the accuracy rises by almost 4 points (84.8% → 88.6%)
+  and the gap with the baseline shrinks from 3.4 to 1.4 points.
+- **Attention adds nothing here.** B and C differ by 20 reviews out of 16,000 (the standard error is ±0.25%), with
+  overlapping AUC intervals and the same split. Short reviews are classified by the words they contain, more than by
+  their order.
+- The TF-IDF baseline with word pairs is still 1.4–1.6 points ahead. It captures expressions such as "no recomiendo"
+  directly. This can be revisited later (more data, larger embedding).
+
+**Proposal: run C (without attention).**
+- Same accuracy as B.
+- **Simpler and faster to deploy:** four layers instead of six. Prediction with OpenNN in Docker will run on CPU, and
+  the cost of attention grows with the square of the text length.
+- It is the network whose parameters are saved in the project now. Choosing B would mean training it again, because
+  a `.nd` keeps only the last trained network.
+- It is a good message for the post: the simpler model is as good as the attention one.
 
 ---
 

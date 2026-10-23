@@ -1,0 +1,116 @@
+{
+  "configuration": {
+    "data_file": "data/processed/reviews_es_train.csv",
+    "column_roles": {
+      "review_id": "None",
+      "product_id": "None",
+      "reviewer_id": "None",
+      "product_category": "None",
+      "stars": "None",
+      "review_title": "None",
+      "review_body": "Input",
+      "sentiment": "Target"
+    },
+    "sequence_length": 128,
+    "vocabulary_size": 11477,
+    "minimum_token_frequency": "2",
+    "reserved_tokens": [
+      "[PAD]",
+      "[UNK]",
+      "[START]",
+      "[END]"
+    ],
+    "labels": [
+      "bad",
+      "good"
+    ],
+    "network": [
+      {
+        "layer": "Embedding",
+        "OutputDimensions": "128 64 ",
+        "VocabularySize": 11477
+      },
+      {
+        "layer": "MultiHeadAttention",
+        "OutputDimensions": "128 64 ",
+        "HeadsNumber": 4
+      },
+      {
+        "layer": "Pooling3d",
+        "OutputDimensions": "64 ",
+        "PoolingMethod": "AveragePooling"
+      },
+      {
+        "layer": "Dense",
+        "OutputDimensions": "64 ",
+        "Activation": "ReLU"
+      },
+      {
+        "layer": "Dense",
+        "OutputDimensions": "1 ",
+        "Activation": "Sigmoid"
+      }
+    ],
+    "training": {
+      "loss": "CrossEntropy",
+      "regularization": "L2 (0.001)",
+      "learning_rate": "0.001",
+      "batch_size": "32",
+      "maximum_epochs": "5",
+      "maximum_validation_failures": 9223372036854776000
+    },
+    "trained": true,
+    "last_change": "2026-10-23T11:19:22"
+  },
+  "results": {
+    "summary": {
+      "Epochs number": "5",
+      "Elapsed time": "00:00:01",
+      "Stopping criterion": "Maximum epochs number",
+      "Training error": "0.321",
+      "Validation error": "0.362"
+    },
+    "best_validation_epoch": 4,
+    "testing_accuracy": 0.84,
+    "recall": {
+      "bad": 0.8288,
+      "good": 0.8509
+    },
+    "precision": {
+      "bad": 0.8442,
+      "good": 0.8361
+    },
+    "confusion_matrix_testing": {
+      "labels": [
+        "good",
+        "bad"
+      ],
+      "rows_actual_columns_predicted": [
+        [
+          1724,
+          302
+        ],
+        [
+          338,
+          1636
+        ]
+      ]
+    },
+    "history": {
+      "training_error": [
+        0.545,
+        0.442,
+        0.393,
+        0.355,
+        0.321
+      ],
+      "validation_error": [
+        0.479,
+        0.417,
+        0.397,
+        0.371,
+        0.362
+      ]
+    }
+  }
+}

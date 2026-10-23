@@ -1,0 +1,334 @@
+{
+  "configuration": {
+    "data_file": "data/processed_40k/reviews_es_train.csv",
+    "column_roles": {
+      "review_id": "None",
+      "product_id": "None",
+      "reviewer_id": "None",
+      "product_category": "None",
+      "stars": "None",
+      "review_title": "None",
+      "review_body": "Input",
+      "sentiment": "Target"
+    },
+    "sequence_length": 128,
+    "vocabulary_size": 20000,
+    "minimum_token_frequency": "2",
+    "reserved_tokens": [
+      "[PAD]",
+      "[UNK]",
+      "[START]",
+      "[END]"
+    ],
+    "labels": [
+      "bad",
+      "good"
+    ],
+    "network": [
+      {
+        "layer": "Embedding",
+        "OutputDimensions": "128 64 ",
+        "VocabularySize": 20000
+      },
+      {
+        "layer": "Pooling3d",
+        "OutputDimensions": "64 ",
+        "PoolingMethod": "AveragePooling"
+      },
+      {
+        "layer": "Dense",
+        "OutputDimensions": "64 ",
+        "Activation": "ReLU"
+      },
+      {
+        "layer": "Dense",
+        "OutputDimensions": "1 ",
+        "Activation": "Sigmoid"
+      }
+    ],
+    "training": {
+      "loss": "CrossEntropy",
+      "regularization": "L2 (0.001)",
+      "learning_rate": "0.001",
+      "batch_size": "64",
+      "maximum_epochs": "100",
+      "maximum_validation_failures": 5
+    },
+    "trained": true,
+    "last_change": "2026-10-23T11:41:19"
+  },
+  "runs": [
+    {
+      "data": {
+        "Rows": "20000",
+        "Vocabulary size": "11477",
+        "Target classes": "2",
+        "Max sequence length": "128"
+      },
+      "network": [
+        "Embedding [128,64,11477]",
+        "MultiHeadAttention [128,64,4]",
+        "Pooling3d [64]",
+        "Dense [64]",
+        "Dense [1]"
+      ],
+      "summary": {
+        "Epochs number": "16",
+        "Elapsed time": "00:00:01",
+        "Stopping criterion": "Early stopping",
+        "Training error": "0.238",
+        "Validation error": "0.345"
+      },
+      "best_validation_epoch": 11,
+      "history": {
+        "training_error": [
+          0.513,
+          0.423,
+          0.391,
+          0.364,
+          0.339,
+          0.318,
+          0.299,
+          0.28,
+          0.267,
+          0.251,
+          0.238,
+          0.218,
+          0.2,
+          0.185,
+          0.161,
+          0.149
+        ],
+        "validation_error": [
+          0.457,
+          0.427,
+          0.404,
+          0.394,
+          0.388,
+          0.373,
+          0.4,
+          0.367,
+          0.352,
+          0.372,
+          0.345,
+          0.36,
+          0.375,
+          0.362,
+          0.41,
+          0.438
+        ]
+      },
+      "area_under_curve": 0.922,
+      "testing_samples": 4000,
+      "testing_accuracy": 0.8482,
+      "recall": {
+        "good": 0.8312,
+        "bad": 0.8658
+      },
+      "precision": {
+        "good": 0.864,
+        "bad": 0.8333
+      },
+      "confusion_matrix_testing": {
+        "labels": [
+          "good",
+          "bad"
+        ],
+        "rows_actual_columns_predicted": [
+          [
+            1684,
+            342
+          ],
+          [
+            265,
+            1709
+          ]
+        ]
+      }
+    },
+    {
+      "data": {
+        "Rows": "80000",
+        "Vocabulary size": "20000",
+        "Target classes": "2",
+        "Max sequence length": "128"
+      },
+      "network": [
+        "Tokenizer [128]",
+        "Embedding [128,64,20000]",
+        "MultiHeadAttention [128,64,4]",
+        "Pooling3d [64]",
+        "Dense [64]",
+        "Dense [1]"
+      ],
+      "summary": {
+        "Epochs number": "14",
+        "Elapsed time": "00:00:06",
+        "Stopping criterion": "Early stopping",
+        "Training error": "0.238",
+        "Validation error": "0.276"
+      },
+      "best_validation_epoch": 9,
+      "history": {
+        "training_error": [
+          0.446,
+          0.359,
+          0.326,
+          0.303,
+          0.286,
+          0.269,
+          0.257,
+          0.246,
+          0.238,
+          0.231,
+          0.223,
+          0.212,
+          0.202,
+          0.196
+        ],
+        "validation_error": [
+          0.393,
+          0.349,
+          0.319,
+          0.303,
+          0.29,
+          0.279,
+          0.287,
+          0.293,
+          0.276,
+          0.276,
+          0.289,
+          0.292,
+          0.298,
+          0.297
+        ]
+      },
+      "area_under_curve": 0.956,
+      "testing_samples": 16000,
+      "testing_accuracy": 0.8858,
+      "recall": {
+        "good": 0.8882,
+        "bad": 0.8833
+      },
+      "precision": {
+        "good": 0.8862,
+        "bad": 0.8853
+      },
+      "confusion_matrix_testing": {
+        "labels": [
+          "good",
+          "bad"
+        ],
+        "rows_actual_columns_predicted": [
+          [
+            7187,
+            905
+          ],
+          [
+            923,
+            6985
+          ]
+        ]
+      }
+    },
+    {
+      "data": {
+        "Rows": "80000",
+        "Vocabulary size": "20000",
+        "Target classes": "2",
+        "Max sequence length": "128"
+      },
+      "network": [
+        "Embedding [128,64,20000]",
+        "Pooling3d [64]",
+        "Dense [64]",
+        "Dense [1]"
+      ],
+      "summary": {
+        "Epochs number": "22",
+        "Elapsed time": "00:00:04",
+        "Stopping criterion": "Early stopping",
+        "Training error": "0.255",
+        "Validation error": "0.278"
+      },
+      "best_validation_epoch": 17,
+      "history": {
+        "training_error": [
+          0.506,
+          0.399,
+          0.338,
+          0.309,
+          0.294,
+          0.287,
+          0.282,
+          0.279,
+          0.277,
+          0.272,
+          0.27,
+          0.266,
+          0.267,
+          0.261,
+          0.259,
+          0.256,
+          0.255,
+          0.251,
+          0.249,
+          0.246,
+          0.244,
+          0.243
+        ],
+        "validation_error": [
+          0.443,
+          0.367,
+          0.322,
+          0.308,
+          0.291,
+          0.291,
+          0.298,
+          0.29,
+          0.282,
+          0.292,
+          0.295,
+          0.282,
+          0.28,
+          0.282,
+          0.284,
+          0.288,
+          0.278,
+          0.294,
+          0.307,
+          0.283,
+          0.292,
+          0.28
+        ]
+      },
+      "area_under_curve": 0.953,
+      "testing_samples": 16000,
+      "testing_accuracy": 0.8845,
+      "recall": {
+        "good": 0.8863,
+        "bad": 0.8827
+      },
+      "precision": {
+        "good": 0.8854,
+        "bad": 0.8835
+      },
+      "confusion_matrix_testing": {
+        "labels": [
+          "good",
+          "bad"
+        ],
+        "rows_actual_columns_predicted": [
+          [
+            7172,
+            920
+          ],
+          [
+            928,
+            6980
+          ]
+        ]
+      }
+    }
+  ]
+}
