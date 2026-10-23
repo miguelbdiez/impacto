@@ -354,6 +354,50 @@ These are the new figures to beat. The next experiments stay the same.
 
 ---
 
+## D-011 · Domain shift: from product reviews to business reviews
+
+- **Date:** 2026-10-23
+- **Status:** Accepted (measurement); the plan below is proposed
+
+**Context.** The model is trained on Amazon product reviews, but it will classify reviews of businesses
+(restaurants, shops, hotels…), which talk about service, staff, waiting times or atmosphere. How much accuracy is
+lost when the domain changes?
+
+**Measurement** (`training/domain_shift.py`). The TF-IDF + logistic regression baseline was tested on two public
+Spanish datasets from the hospitality sector (MIT licence, downloaded to `data/external/`, not committed):
+- **Punta Cana hotel reviews:** 32,801 real reviews in Spanish, 93% positive. Balanced accuracy on a 30% test split.
+- **HorecaReviews-ES:** 4,655 **synthetic** reviews of bars, cafés and restaurants, written in styles designed to be
+  difficult (sarcastic, anecdotal, constructive…).
+
+| Trained on | Amazon (testing) | Hotels | Bars and restaurants |
+|---|---|---|---|
+| Amazon, 12k reviews | 88.2% | **90.4%** | **73.8%** |
+| Amazon, 48k reviews | 90.0% | 92.2% | 78.0% |
+| Hotels only, 23k reviews | — | 94.9% | 69.7% |
+| Amazon 12k + hotels 23k | — | 92.2% | 78.5% |
+
+Accuracy on bars and restaurants by style (Amazon 48k): sarcastic 47%, anecdotal 66%, constructive 80%, critical 82%,
+enthusiastic 85%, short 88%.
+
+**Conclusions.**
+- On **real business reviews** (hotels) the Amazon model works well: 90–92%, only 3–5 points below a model trained
+  on hotel reviews. General sentiment vocabulary ("excelente", "horrible", "no lo recomiendo") is shared across domains.
+- The hard part is the **style**, not the sector: sarcasm is a coin toss and indirect, anecdotal reviews are often
+  missed. A model trained only on hotels does even worse on the bar reviews (69.7%).
+- More Amazon data helps in every domain (+2 to +4 points), and mixing in data from the target domain helps most.
+
+**Plan.**
+1. Train with more Amazon data (40k reviews per class).
+2. Google reviews come **with stars**, so every collected review is also a free labelled example. The dashboard can
+   show how often the predicted sentiment agrees with the stars: continuous monitoring of the model in its real
+   domain.
+3. If that agreement is low, retrain adding labelled reviews from many businesses (collected by the scraper) or the
+   Rest-Mex corpus (restaurants and hotels, registration required).
+4. The model's real value is for text **without** stars (forums, social media). The starred reviews are the way to
+   validate it.
+
+---
+
 ## Open questions
 
 - Exact Neural Designer export format for text classification models and how to load it in OpenNN (D-003).
