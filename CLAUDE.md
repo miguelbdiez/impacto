@@ -83,10 +83,13 @@ Last update: 2026-10-26.
   - Several businesses (D-022): home page with cards, dialog to create a dashboard (free search, number of reviews,
     cost, token), manual updates. Test businesses deleted with `pipeline/delete_place.py`; only El Corte Inglés remains.
   - Database on SQLAlchemy, SQLite or PostgreSQL (D-021); model published in `models/model_c/` (D-021).
-  - Docker files written (D-022) and Power BI guide (D-023, `docs/power-bi.md`).
+  - Docker tested and working (D-022): `docker compose up --build` builds OpenNN (4 parallel jobs, more runs out of
+    memory), fills PostgreSQL from the JSON downloads and serves the app; ports bound to 127.0.0.1. Docker Desktop is
+    installed per user: its CLI is in `%LOCALAPPDATA%/Programs/DockerDesktop/resources/bin` (add it to PATH if needed).
+  - Power BI guide written (D-023, `docs/power-bi.md`).
 - Next:
-  1. The author installs Docker Desktop and Power BI Desktop; test `docker compose up --build` (not tested yet: Docker
-     was not installed) and build the Power BI report following the guide.
+  1. The author installs Power BI Desktop (Microsoft Store) and builds the report following the guide, with Docker
+     running.
   2. Deeper analysis of bad reviews: peaks (sales, Black Friday, Christmas), works in the building, the new AI
      customer service, online orders and returns (they show up in the excerpts and the distinctive words).
   3. Project write-up and LinkedIn post: architecture images from `models/impacto_model_c.nd`, before/after model

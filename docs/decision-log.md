@@ -863,6 +863,19 @@ $0.006 and $0.012).
 - Secrets and settings come from `.env` (`.env.example` lists them). `.gitattributes` keeps shell scripts with LF line
   endings, and the Dockerfile strips CR characters again in case of a Windows checkout.
 
+**Update (2026-10-26): Docker tested** (Docker Desktop 29.9, Compose 5.6, 28 CPUs and 16 GB for containers).
+- The first build failed: compiling OpenNN with an unlimited `--parallel` launched 28 compilations at once, each can
+  take over 1 GB, and the Docker engine ran out of memory and stopped. The build now uses 4 jobs (`BUILD_JOBS`, can
+  be raised with `--build-arg`). The image is 3.45 GB, mostly Chromium and the Python libraries.
+- On first start PostgreSQL filled itself from the JSON downloads: 7,490 reviews, 3,063 classified (2,185 good,
+  878 bad), **the same figures as the Windows build of the predictor**, so OpenNN compiled with GCC on Linux and with
+  MSVC on Windows give the same predictions. Restarting imports nothing again: the data persists in the volume.
+- Checked from the host as Power BI will see it: the `review_facts` view returns the 7,490 reviews with dates from
+  October 2021 to October 2026. The app shows the home page and the dashboard without errors.
+- Streamlit's start-up log showed an "External URL" with the public IP: Docker publishes ports on every interface by
+  default, which would have exposed PostgreSQL, with its default password, to the network. Both ports are now bound
+  to `127.0.0.1`, this computer only.
+
 ---
 
 ## D-023 · Power BI on PostgreSQL

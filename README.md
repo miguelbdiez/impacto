@@ -31,7 +31,9 @@ docker compose up --build
 ```
 
 The app opens at http://localhost:8501 and PostgreSQL listens on `localhost:5432` for Power BI
-([docs/power-bi.md](docs/power-bi.md)). Downloads already in `data/reviews` are imported on start.
+([docs/power-bi.md](docs/power-bi.md)); both only accept connections from your own computer. Downloads already in
+`data/reviews` are imported on start. The first build compiles OpenNN and takes a few minutes; with plenty of memory
+for Docker it can use more parallel jobs: `docker compose build --build-arg BUILD_JOBS=8`.
 
 ## Run it without Docker
 

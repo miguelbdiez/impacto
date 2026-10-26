@@ -8,9 +8,13 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 COPY inference/ inference/
+# Each OpenNN source file can take over 1 GB to compile: an unlimited --parallel on a many-core machine runs out of
+# memory and takes the Docker engine down. Raise BUILD_JOBS (docker compose build --build-arg BUILD_JOBS=8) if
+# Docker has plenty of memory.
+ARG BUILD_JOBS=4
 # CMake downloads OpenNN from GitHub at the commit pinned in inference/CMakeLists.txt
 RUN cmake -S inference -B build -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build build --target impacto_predict --parallel
+    && cmake --build build --target impacto_predict --parallel ${BUILD_JOBS}
 
 # ---- Stage 2: the app ---------------------------------------------------------------------------------
 FROM python:3.13-slim-trixie

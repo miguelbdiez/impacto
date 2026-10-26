@@ -11,8 +11,9 @@ services:
       POSTGRES_DB: impacto
       POSTGRES_USER: impacto
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-impacto}
+    # Only reachable from this computer (127.0.0.1): Power BI Desktop connects here (docs/power-bi.md)
     ports:
-      - "5432:5432"  # Power BI Desktop connects here (docs/power-bi.md)
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -29,7 +30,7 @@ services:
       DATABASE_URL: postgresql+psycopg://impacto:${POSTGRES_PASSWORD:-impacto}@db:5432/impacto
       APIFY_TOKEN: ${APIFY_TOKEN:-}
     ports:
-      - "8501:8501"
+      - "127.0.0.1:8501:8501"
     volumes:
       - ./data:/app/data
 
