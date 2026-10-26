@@ -819,6 +819,52 @@ app.
 
 ---
 
+## D-022 · Several businesses, manual updates and Docker
+
+- **Date:** 2026-10-26
+- **Status:** Accepted (Docker files written; to be tested once Docker Desktop is installed)
+
+**App.** As designed by the author:
+- **Home page:** one card per business (Google rating, reviews analysed, % bad according to the model and % 1–2★ in
+  the last 12 months) and a **"Crear dashboard nuevo"** button.
+- **Dialog to create a dashboard:** search the business by name (free, see below), choose among the results when
+  there are several, choose **how many reviews to download** (the author's choice: whatever the user wants) and
+  optionally a start date, and give the Apify token if none is configured (it can be saved to `.env`). The dialog
+  shows the estimated cost ($0.0006 per review) and the credit left this month, and warns when the credit is not
+  enough. Without a payment method Apify cannot charge more than the free credit.
+- **Each card opens the business dashboard** (D-020), which has **"Actualizar reseñas"**: downloads only the
+  reviews published since the newest one stored, up to a chosen maximum.
+- **Updates are manual** (the author's choice), from that button or `pipeline/update_reviews.py`.
+
+**Free business search.** `src/impacto/sources/google_maps.py` opens Google Maps in a headless browser without an
+account and reads name, address, rating and URL, or the list of results. In a headless browser Maps does not even
+show the total number of reviews; disguising the browser to get it was ruled out (D-013), so that figure arrives
+with the download. It runs as a separate process because Playwright and Streamlit do not share an event loop on
+Windows.
+
+Tested end to end in a browser driven by Playwright: home, card, dashboard, update dialog, back, and creation of a
+second dashboard (Mercadona, Av. de Villamayor 31, Salamanca) with 10 reviews for $0.006 of the test credit.
+
+**Update (2026-10-26): clean-up and cost fix.** The test dashboards (Mercadona, 10 reviews, and MediaMarkt Los
+Capuchinos, 20 reviews, created by the author while trying the app) were deleted with the new
+`pipeline/delete_place.py`, which removes a place from the database and its downloads from `data/reviews/` (otherwise
+the next import would load it again). Only El Corte Inglés Princesa remains. Those two downloads had recorded a cost
+of $0.00005, the start fee only: Apify adds the per-review charges a few seconds after a run finishes, and the client
+read them too early. The client now waits until the charges match the reviews downloaded (the real costs were
+$0.006 and $0.012).
+
+**Docker.** `docker compose up --build` starts:
+- `db`: PostgreSQL 17, port 5432 open on the host for Power BI, data in the `pgdata` volume.
+- `app`: the Streamlit app. A first build stage compiles the OpenNN predictor from GitHub at the pinned commit
+  (Debian trixie: GCC 14, CMake 3.31); the final image has Python 3.13, the dependencies locked by `uv.lock`, Chromium
+  for the business search, and the published model. On start it creates the tables, imports the downloads in
+  `./data/reviews` not yet in the database, classifies them and opens the app on port 8501. A new PostgreSQL database
+  therefore fills itself from the JSON files.
+- Secrets and settings come from `.env` (`.env.example` lists them). `.gitattributes` keeps shell scripts with LF line
+  endings, and the Dockerfile strips CR characters again in case of a Windows checkout.
+
+---
+
 ## Ideas for later
 
 - **Bad reviews vs. construction works (El Tormes).** Plot the share of bad reviews over time and mark the periods

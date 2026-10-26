@@ -1,0 +1,37 @@
+# impacto with Docker (decisions D-022, D-023):
+#   docker compose up --build      app at http://localhost:8501, PostgreSQL at localhost:5432
+#
+# Values come from the .env file (copy .env.example): APIFY_TOKEN to download reviews, and optionally
+# POSTGRES_PASSWORD. The raw downloads live in ./data and the database in the "pgdata" volume.
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: impacto
+      POSTGRES_USER: impacto
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-impacto}
+    ports:
+      - "5432:5432"  # Power BI Desktop connects here (docs/power-bi.md)
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U impacto -d impacto"]
+      interval: 5s
+      retries: 12
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://impacto:${POSTGRES_PASSWORD:-impacto}@db:5432/impacto
+      APIFY_TOKEN: ${APIFY_TOKEN:-}
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  pgdata:

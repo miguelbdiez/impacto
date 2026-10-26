@@ -1,0 +1,11 @@
+# Only what the image needs: the data is mounted as a volume and secrets come from the environment
+.git
+.venv
+.env
+build
+data
+docs
+training
+models/*.nd
+*.nd
+**/__pycache__
