@@ -65,14 +65,21 @@ Last update: 2026-10-23.
   - App architecture: Streamlit + Power BI on the same database (D-012).
   - Google Maps exploration (D-013, `scraping/explore_google_maps.py`): without a Google account only 5 reviews are
     visible; more reviews or sorting require signing in. The network data has exact timestamps for each review.
-- **Waiting for the author's decision: D-017.** Proposal: Apify free plan (no card) for the full history of El
-  Tormes once, then daily updates of new reviews only, within the free credit. The author had also suggested a
-  secondary Google account scraping every hour; not recommended (account blocks, terms of service).
-- Next, once D-017 is decided:
-  1. The author creates the Apify account and puts the token in `.env` (`APIFY_TOKEN=...`).
-  2. Apify client (full and incremental download) and importer to our format, dropping author data. Test with
-     ~50 reviews first.
-  3. Database, Streamlit app (search box, % good/bad, evolution over time, stars vs. prediction) and Power BI.
+- Case study changed to **El Corte Inglés Princesa (Edificio Moda)**, Madrid: 13,706 Google reviews (D-001 update).
+- D-017 accepted: Apify free plan, **zero cost** (no payment method on the account), reviews since 2019-01-01,
+  actor `compass/google-maps-reviews-scraper` with `personalData: false`. The code keeps limits as parameters so
+  others can pay for more; we never do.
+  - Apify account (free, no payment method) and token in `.env`. Price measured: $0.60 per 1,000 reviews.
+  - Downloaded 7,490 reviews (Oct 2021 to Oct 2026; the cap was reached before 2019) for $4.49; ~$0.47 of credit
+    left until 25 Nov 2026. Raw JSON in `data/reviews/`, database `data/impacto.db` (D-018), 3,063 Spanish reviews
+    classified by model C.
+  - First results (D-019): model C agrees with the stars 87.1% (AUC 0.94) on this real business; 1–2★ reviews and
+    predicted-bad texts are growing (22% → 34% bad from 2021 to 2026).
+- Next:
+  1. Analyse the bad reviews: topics (parking, service, prices…) and peaks (sales, Black Friday, Christmas).
+  2. Streamlit app (search box, % good/bad, evolution over time, stars vs. prediction, link to the source code)
+     and Power BI on the same data (PostgreSQL when moving to Docker).
+  3. Daily update of new reviews (~2 a day, within the free credit).
   4. Docker.
   5. Project write-up and LinkedIn post: architecture images from `models/impacto_model_c.nd`, before/after model
-     curves, and the "bad reviews vs. construction works" idea (see "Ideas for later" in the decision log).
+     curves, the model vs. stars agreement (87.1%) and the trend of bad reviews (see D-019 and "Ideas for later").
