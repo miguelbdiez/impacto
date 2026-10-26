@@ -705,6 +705,45 @@ prediction run processes nothing.
 
 ---
 
+## D-019 · First results on El Corte Inglés Princesa
+
+- **Date:** 2026-10-26
+- **Status:** Accepted (findings; reproducible with `pipeline/summary.py`)
+
+**Data.** 7,490 Google reviews from 29 October 2021 to 24 October 2026, mean 4.20 stars (55.1% 5★, 26.5% 4★,
+9.0% 3★, 2.4% 2★, 7.0% 1★). 3,373 have text (45%); 3,071 of them are in Spanish, and 3,063 were classified by model C
+(the other 8 contain only emojis or symbols). Spanish texts are short: median 11 words, against 22 in the Amazon data.
+The owner replied to only 18 reviews.
+
+**The model works on the real business.** The stars give a free label: 1–2★ should be bad, 4–5★ good. On the 2,796
+classified reviews with those stars:
+
+| Metric | Model C on El Corte Inglés | Model C on Amazon hold-out (D-015) |
+|---|---|---|
+| Agreement / accuracy | **87.1%** | 88.5% |
+| Recall bad / good | 86.6% / 87.2% | 88.2% / 88.8% |
+| AUC | **0.940** | 0.955 |
+
+Trained on product reviews, the model loses only about 1.5 points on a department store, in line with the domain
+shift measured in D-011. 3-star reviews are split: 52% predicted good.
+
+**First finding: negative opinions are growing.**
+
+| Year | Reviews | Mean stars | 1–2★ | Predicted bad (Spanish texts) |
+|---|---|---|---|---|
+| 2021 (from 29 Oct) | 514 | 4.2 | 6.6% | 22.4% |
+| 2022 | 2,371 | 4.3 | 7.2% | 24.1% |
+| 2023 | 1,927 | 4.2 | 8.8% | 30.1% |
+| 2024 | 1,180 | 4.1 | 11.8% | 32.0% |
+| 2025 | 927 | 4.2 | 13.1% | 32.5% |
+| 2026 (to 24 Oct) | 571 | 4.1 | 12.6% | 34.4% |
+
+The share of 1–2★ reviews doubled from 2021–2022 to 2025–2026, and the model sees the same trend in the texts
+(22% → 34% bad). The yearly number of reviews also fell. Next: what the bad reviews talk about (parking, service,
+prices…) and whether there are peaks around sales, Black Friday or Christmas.
+
+---
+
 ## Ideas for later
 
 - **Bad reviews vs. construction works (El Tormes).** Plot the share of bad reviews over time and mark the periods
