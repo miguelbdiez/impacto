@@ -671,6 +671,40 @@ except search engines. Technically easier, but more explicitly forbidden, so it 
 
 ---
 
+## D-018 · Database and pipeline
+
+- **Date:** 2026-10-26
+- **Status:** Accepted
+
+**Decision.** A local **SQLite** database (`data/impacto.db`, git-ignored) with standard SQL, so it can move to
+PostgreSQL when the app runs in Docker (D-006, D-012). SQLite needs no installation, and Docker is not set up yet.
+
+| Table | Content |
+|---|---|
+| `places` | The business listing: name, address, category, coordinates, Google rating, total reviews |
+| `reviews` | Review id, place, **exact publication date**, stars, original text and language, Google's translation if any, likes, date of the owner's reply, origin, download run |
+| `runs` | Each download: date, place, start date requested, reviews, cost |
+| `predictions` | One row per review and model: probability, label, threshold, date |
+
+**Why.**
+- Predictions live in their own table, so a future model can be compared with model C without losing its results.
+- Only what the analysis needs is stored. Not stored: reviewer data (never downloaded, D-017), review photos (they
+  may show people), the reviewer's number of reviews and the text of the owner's replies (only whether and when
+  the owner replied).
+
+**Pipeline.**
+1. `scraping/download_reviews.py`: Apify download, saved as JSON in `data/reviews/` (results expire in Apify
+   after 7 days).
+2. `pipeline/import_reviews.py`: loads the JSON into the database. Idempotent: importing again updates, never
+   duplicates.
+3. `pipeline/predict_reviews.py`: classifies the reviews with text in Spanish that the model has not seen yet,
+   with OpenNN (D-015).
+
+Checked with the 50-review test download: 22 Spanish texts classified; a second import adds nothing and a second
+prediction run processes nothing.
+
+---
+
 ## Ideas for later
 
 - **Bad reviews vs. construction works (El Tormes).** Plot the share of bad reviews over time and mark the periods
