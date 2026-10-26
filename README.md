@@ -6,6 +6,9 @@ the model agrees with the stars, and what bad and good reviews talk about.
 
 > Portfolio project: machine learning with [Neural Designer](https://www.neuraldesigner.com) and
 > [OpenNN](https://github.com/Artelnics/opennn), data analysis, a Streamlit app and a Power BI dashboard.
+> The full write-up, in Spanish, is in [report/memoria.pdf](report/memoria.pdf).
+
+![How opinions about El Corte Inglés Princesa evolve: share of bad reviews according to the model and share of 1–2 star reviews](report/figures/app_evolution.png)
 
 ## How it works
 
@@ -16,7 +19,7 @@ Google Maps reviews ──Apify──▶ JSON (data/reviews) ──▶ database 
 
 - **Model:** trained in the Neural Designer desktop application on 80,000 Spanish Amazon reviews and run with a small
   OpenNN program (6.6 MB instead of the full Neural Designer engine). 88.5% accuracy on held-out reviews and 87.1%
-  agreement with the stars on 2,796 real reviews of a department store.
+  agreement with the stars on 2,796 real reviews of El Corte Inglés Princesa (Madrid).
 - **App:** a card per business, a dialog to create the dashboard of a new one (search, number of reviews, cost) and,
   for each business, the evolution of good and bad reviews, the model against the stars, the most distinctive words
   and examples. Updates are manual.
@@ -73,6 +76,8 @@ explains how to rebuild them.
 
 ## Documentation
 
+- [Project write-up](report/memoria.pdf) (Spanish, PDF): the whole project with figures; source in
+  [report/memoria.tex](report/memoria.tex), built with `pdflatex`
 - [Decision log](docs/decision-log.md): every design decision and why it was taken
 - [Training dataset](docs/dataset.md): source, licence, processing steps and checksums
 - [Neural Designer project](docs/neural-designer.md): configuration and how to inspect a saved project
