@@ -23,6 +23,13 @@ Those reviews are used only to demonstrate the system, **not to train** the mode
 **Future scope.** Classify text that has no star rating (forums, social media posts). This is the reason to train a
 text classifier instead of simply averaging stars.
 
+**Update (2026-10-26): case study.** The live case study is **El Corte Inglés Princesa (Edificio Moda)**, Calle de
+la Princesa 56, Madrid (Moncloa–Argüelles): 4.2 stars, 13,706 Google reviews. A nationally known brand makes the
+project more relatable than a local shopping centre. El Corte Inglés Castellana was discarded (42,151 reviews, too
+many for the free plan of D-017). *Centro Comercial El Tormes* (Salamanca) remains the place used to explore Google
+Maps (D-013). The analysis is presented neutrally, with aggregated figures, no logos and a note that it is an
+educational analysis of public reviews, not affiliated with the company.
+
 ---
 
 ## D-002 · Classification target: good / bad
@@ -581,7 +588,7 @@ AGPL as well.
 ## D-017 · Collecting the reviews: Apify free plan
 
 - **Date:** 2026-10-23
-- **Status:** Proposed (pending the author's confirmation)
+- **Status:** Accepted on 2026-10-26, with a zero-cost rule (see the update at the end of this entry)
 
 **Context.** The exploration (D-013 update) showed that without a Google account Maps only shows 5 reviews. The
 author does not want to pay anything for a portfolio project.
@@ -619,6 +626,27 @@ author does not want to pay anything for a portfolio project.
 
 The signed-in Google account option was proposed by the author (hourly updates) and is not recommended, for the
 reasons above.
+
+**Update (2026-10-26): other review sites checked.** Before deciding, other sites with opinions about businesses
+were checked for *Centro Comercial El Tormes*. Google concentrates almost all of them: 11,017 reviews against 7 on
+Yelp (apparently in English). There is no listing with opinions on TripAdvisor, Foursquare (its City Guide closed in
+December 2024), Páginas Amarillas or Minube. Gastroranking republishes Google reviews. Trustpilot was also checked
+for online shops (e.g. PcComponentes, 16,825 reviews in Spanish): only the ~10 most recent pages are visible without
+an account (deeper pages ask to sign in and show a reCAPTCHA), and its `robots.txt` disallows every automated agent
+except search engines. Technically easier, but more explicitly forbidden, so it was discarded.
+
+**Update (2026-10-26): decision.** Apify free plan, with these rules:
+- **Zero cost.** Only the free plan (~$5 of credit per month) and **no payment method added to the account**, so
+  nothing can ever be charged. When the credit runs out, Apify stops the runs until the next month.
+- **Reviews since 2019-01-01** of El Corte Inglés Princesa (D-001 update), sorted by newest.
+- **Actor:** `compass/google-maps-reviews-scraper` (official). `personalData: false` makes it skip the reviewer's
+  name, profile, photo and review URL **at the source**, so no personal data is ever collected. `publishedAtDate`
+  gives the exact date.
+- **The code supports paid use without us paying:** maximum reviews and maximum charge per run are parameters.
+  Anyone with a paid plan can raise them; our runs stay within the free credit.
+- **First a test run of ~50 reviews** to measure the real price per review on the free plan. Then the download is
+  sized to fit the monthly credit, split over two months if needed.
+- The reviews go into a database (local first, D-018 to be written).
 
 ---
 
