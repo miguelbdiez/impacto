@@ -34,7 +34,8 @@
 ## Setup on a new computer
 
 Tools: [uv](https://docs.astral.sh/uv/), Git, CMake ≥ 3.24 and a C++20 compiler (Visual Studio Build Tools on
-Windows) for the OpenNN predictor. Neural Designer only to train or to open the projects. Docker is not set up yet.
+Windows) for the OpenNN predictor, or Docker Desktop to run everything in containers (`docker compose up --build`,
+README). Neural Designer only to train or to open the projects.
 
 ```bash
 uv sync --group analysis
@@ -46,15 +47,16 @@ uv run training/prepare_dataset.py --per-class 40000 --output-dir data/processed
 
 Copy by hand from the previous computer (not in the repository):
 - `models/impacto_model_c.nd`: the selected model, frozen (D-014). Also `impacto.nd`, the working project, if needed.
-- If `models/model_c/` is missing, export it again:
-  `uv run --group analysis training/export_model.py models/impacto_model_c.nd models/model_c --threshold 0.44`
+  The exported model `models/model_c/` is in the repository (D-021).
+- `data/reviews/`: the raw Apify downloads (the database is rebuilt from them with `pipeline/import_reviews.py`).
+- `.env`: the Apify token (see `.env.example`).
 - Then build the predictor (`docs/inference.md`; CMake downloads OpenNN commit `5aa391c` from GitHub) and check it:
   `uv run --group analysis training/evaluate_inference.py` must give 88.5% accuracy on the hold-out set, and
   `training/check_parity.py` must match Neural Designer.
 
 ## Status (update when it changes)
 
-Last update: 2026-10-23.
+Last update: 2026-10-26.
 
 - Done:
   - Data and model: Amazon reviews in Spanish, two classes, ASCII normalisation. Model C trained in Neural Designer
@@ -75,11 +77,17 @@ Last update: 2026-10-23.
     classified by model C.
   - First results (D-019): model C agrees with the stars 87.1% (AUC 0.94) on this real business; 1–2★ reviews and
     predicted-bad texts are growing (22% → 34% bad from 2021 to 2026).
+  - Streamlit app, first version (D-020): `uv run streamlit run app/streamlit_app.py`. Statistics in
+    `src/impacto/analysis.py`. Interface in Spanish. Charts follow the dataviz guide (validated palette, light and
+    dark themes checked with screenshots).
+  - Several businesses (D-022): home page with cards, dialog to create a dashboard (free search, number of reviews,
+    cost, token), manual updates. Test businesses deleted with `pipeline/delete_place.py`; only El Corte Inglés remains.
+  - Database on SQLAlchemy, SQLite or PostgreSQL (D-021); model published in `models/model_c/` (D-021).
+  - Docker files written (D-022) and Power BI guide (D-023, `docs/power-bi.md`).
 - Next:
-  1. Analyse the bad reviews: topics (parking, service, prices…) and peaks (sales, Black Friday, Christmas).
-  2. Streamlit app (search box, % good/bad, evolution over time, stars vs. prediction, link to the source code)
-     and Power BI on the same data (PostgreSQL when moving to Docker).
-  3. Daily update of new reviews (~2 a day, within the free credit).
-  4. Docker.
-  5. Project write-up and LinkedIn post: architecture images from `models/impacto_model_c.nd`, before/after model
+  1. The author installs Docker Desktop and Power BI Desktop; test `docker compose up --build` (not tested yet: Docker
+     was not installed) and build the Power BI report following the guide.
+  2. Deeper analysis of bad reviews: peaks (sales, Black Friday, Christmas), works in the building, the new AI
+     customer service, online orders and returns (they show up in the excerpts and the distinctive words).
+  3. Project write-up and LinkedIn post: architecture images from `models/impacto_model_c.nd`, before/after model
      curves, the model vs. stars agreement (87.1%) and the trend of bad reviews (see D-019 and "Ideas for later").
