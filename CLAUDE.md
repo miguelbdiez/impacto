@@ -56,7 +56,7 @@ Copy by hand from the previous computer (not in the repository):
 
 ## Status (update when it changes)
 
-Last update: 2026-10-26.
+Last update: 2026-10-26 (evening).
 
 - Done:
   - Data and model: Amazon reviews in Spanish, two classes, ASCII normalisation. Model C trained in Neural Designer
@@ -86,11 +86,13 @@ Last update: 2026-10-26.
   - Docker tested and working (D-022): `docker compose up --build` builds OpenNN (4 parallel jobs, more runs out of
     memory), fills PostgreSQL from the JSON downloads and serves the app; ports bound to 127.0.0.1. Docker Desktop is
     installed per user: its CLI is in `%LOCALAPPDATA%/Programs/DockerDesktop/resources/bin` (add it to PATH if needed).
-  - Power BI guide written (D-023, `docs/power-bi.md`).
+  - Power BI (D-023, `docs/power-bi.md`): the author built the slicer, the cards and the line chart, then stopped on
+    purpose. The `.pbix` is not published.
+  - The Docker database also holds MediaMarkt Los Capuchinos (Salamanca, 200 reviews), created from the Docker app.
+  - Project write-up, first draft (D-024): `report/memoria.tex` in Spanish, 15 pages, compiled with MiKTeX
+    (`%LOCALAPPDATA%/Programs/MiKTeX/miktex/bin/x64/pdflatex.exe`, run twice inside `report/`). App screenshots
+    taken with Playwright from the Docker app.
 - Next:
-  1. The author installs Power BI Desktop (Microsoft Store) and builds the report following the guide, with Docker
-     running.
-  2. Deeper analysis of bad reviews: peaks (sales, Black Friday, Christmas), works in the building, the new AI
-     customer service, online orders and returns (they show up in the excerpts and the distinctive words).
-  3. Project write-up and LinkedIn post: architecture images from `models/impacto_model_c.nd`, before/after model
-     curves, the model vs. stars agreement (87.1%) and the trend of bad reviews (see D-019 and "Ideas for later").
+  1. Push when the author asks, then make the repository public (`report/memoria.pdf` is committed, D-024).
+  2. Optional: deeper analysis of bad reviews: peaks (sales, Black Friday, Christmas), works in the building, the
+     new AI customer service, online orders and returns.

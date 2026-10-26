@@ -890,6 +890,47 @@ figures (reviews, mean stars, % bad according to the model counting only classif
 BI, so the guide goes step by step with the Spanish menu names. The finished report is saved as
 `powerbi/impacto.pbix`.
 
+**Update (2026-10-26): report built, then stopped.** The author followed the guide up to the business slicer, one
+card visual with the four measures and the monthly line chart (model blue, stars orange). The figures match
+PostgreSQL: 7,490 reviews, mean 4.2, 28.7% bad according to the model, 9.4% with 1–2★. Two steps were added to the
+guide while doing it: Power BI names the table `public review_facts` and it has to be renamed, and each measure holds
+a single formula. The author stopped there: Power BI was a learning exercise, and the `.pbix` is not published
+(`*.pbix` is git-ignored). A screenshot goes in the project write-up (D-024).
+
+---
+
+## D-024 · Project write-up (memoria) in LaTeX
+
+- **Date:** 2026-10-26
+- **Status:** Accepted (first draft; Neural Designer screenshots pending)
+
+**Decision.** A LaTeX report, `report/memoria.tex`, with a cover, the author's name, links to GitHub and LinkedIn, a
+running header and a page footer. It tells the whole project from this log: goals, architecture and technologies,
+training data, training in Neural Designer, inference with OpenNN, review collection, database, results, app,
+Power BI, Docker, conclusions, licence. It is written in **Spanish**, for a Spanish-speaking audience; the
+repository docs stay in English (D-004).
+
+**Figures.**
+- Neural Designer screenshots taken by the author from `models/impacto_model_c.nd`: the network (neural network
+  report), the training and selection error history, and the confusion matrix (`report/figures/nd_*.png`). Until
+  they exist the document shows a dashed "Captura pendiente" box, so it always compiles.
+- App screenshots taken with Playwright from the Docker app (`report/figures/app_*.png`), without the examples
+  section: the report shows aggregated figures, not review texts.
+- The Power BI screenshot, and two diagrams drawn in TikZ (pipeline and Docker deployment).
+
+**Tools.** MiKTeX (free, installed per user with winget) and `pdflatex`; the document also compiles on Overleaf.
+Plain `article` class with Libertinus fonts and the app's colours. The build files are git-ignored; whether the PDF
+goes into the repository is decided when the repository is made public.
+
+**Update (2026-10-26): Neural Designer screenshots added.** The author exported the network architecture, the
+Adam error history (training and validation) and the confusion table from Neural Designer. The network image also
+goes on the cover. The text now says "validation" like the chart (Neural Designer calls that subset "selection"),
+and the LaTeX copy of the confusion matrix was removed because the Neural Designer table shows the same figures.
+
+**Update (2026-10-26): the PDF goes into the repository.** `report/memoria.pdf` is committed next to its source and
+figures, and the README links it: GitHub shows PDFs in the browser, so it can be read without building it.
+Screenshots the report does not use were deleted; one of them showed the examples section with review texts.
+
 ---
 
 ## Ideas for later
