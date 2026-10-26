@@ -865,6 +865,20 @@ $0.006 and $0.012).
 
 ---
 
+## D-023 · Power BI on PostgreSQL
+
+- **Date:** 2026-10-26
+- **Status:** Accepted (guide written; the author builds the report)
+
+Power BI Desktop connects to the Docker PostgreSQL (`localhost:5432`) in **DirectQuery** mode and reads the
+`review_facts` view (D-021). `docs/power-bi.md` covers the connection, four DAX measures equivalent to the app's
+figures (reviews, mean stars, % bad according to the model counting only classified reviews, % 1–2★), the visuals
+(the same story and colours as the app, one axis per chart) and automatic page refresh. The author is new to Power
+BI, so the guide goes step by step with the Spanish menu names. The finished report is saved as
+`powerbi/impacto.pbix`.
+
+---
+
 ## Ideas for later
 
 - **Bad reviews vs. construction works (El Tormes).** Plot the share of bad reviews over time and mark the periods
