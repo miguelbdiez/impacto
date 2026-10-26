@@ -1,0 +1,6 @@
+[theme]
+# Neutral accent (violet) for controls: blue and red carry meaning in the charts (model / good / bad)
+primaryColor = "#6250d6"
+
+[browser]
+gatherUsageStats = false

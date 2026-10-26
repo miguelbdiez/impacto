@@ -744,6 +744,61 @@ prices…) and whether there are peaks around sales, Black Friday or Christmas.
 
 ---
 
+## D-020 · Streamlit app, first version
+
+- **Date:** 2026-10-26
+- **Status:** Accepted
+
+**Context.** With the reviews classified (D-019), the results have to be shown. The author chose Streamlit first and
+Power BI later (D-012), using **every review and saying what each figure is based on**.
+
+**Decision.** `app/streamlit_app.py` (run with `uv run streamlit run app/streamlit_app.py`), with the statistics in
+`src/impacto/analysis.py`, independent of the interface so Power BI can reuse them. The interface is in Spanish, the
+language of the reviews and of the post; the code stays in English.
+
+| Section | Content | Form |
+|---|---|---|
+| Header | Period, number of reviews, Google rating, and which reviews the model reads | Text |
+| Last 12 months | Reviews, mean stars, % bad according to the model, % 1–2★, each against the previous 12 months | Stat tiles with deltas |
+| Filters | Period (months) and grouping (month, quarter, year), one row above every chart they affect | Slider and buttons |
+| How do opinions evolve? | % bad according to the model (Spanish texts) and % 1–2★ (all reviews), plus the number of reviews | Two lines on **one** percentage axis; volume in a separate chart |
+| Who writes? | Mean stars and % 1–2★ for Spanish texts, other languages and stars only | Table |
+| Does the model agree with the stars? | Agreement (87.1%) and, for each star rating, the share the model labels good or bad | Stat tile and stacked bars |
+| What do they talk about? | Words that most set bad reviews apart from good ones and vice versa | Horizontal bars |
+| Examples | Recent bad and good reviews, and disagreements between stars and model, as short excerpts | List |
+| Footer | Educational note, data source and link to the source code (AGPL, D-016) | Text |
+
+**How the figures are built.**
+- **Every review counts** for the star statistics; the model figures use the Spanish texts and say so. The "Who
+  writes?" section explains why they differ: 17.3% of Spanish texts have 1–2★, against 3.6% of reviews with stars
+  only.
+- **Distinctive words:** log-odds ratio with an informative Dirichlet prior (Monroe, Colaresi and Quinn, 2008), counting
+  each word once per review. Unlike raw frequency, it ignores words common to every review and does not let a word
+  seen twice top the list. First result: bad reviews talk about *cliente* (customer service), *pedido*, *online*,
+  *nadie*, *minutos*, *días*, *recoger*; good ones about *variedad*, *calidad*, *productos*, *trato*, *amable*.
+
+**Visual design** (the assistant's data-viz guide).
+- Colours from its validated reference palette, not invented: two categorical slots (blue and orange) for the two
+  measures, the blue ↔ red diverging pair for good ↔ bad, gray for context. The dark theme uses its own validated
+  steps. The validator script could not run (Node.js is not installed), so the documented values were used unchanged.
+- No dual axis, solid hairline grid, 2 px lines, bars of at most 24 px with rounded ends, text in ink colours (never in
+  series colours), tooltips on every chart and a table view of the evolution.
+- The control accent is violet (`.streamlit/config.toml`), so it never collides with the blue and red that carry
+  meaning in the charts.
+- Checked with screenshots in light and dark themes. Fixed after looking at them: truncated legend, end labels in
+  series colours, overlapping bars, excerpts cut by table cells, and charts in light colours under a dark theme.
+  Streamlit's `st.context.theme` reports the browser preference even when the theme is fixed in the configuration,
+  so the configured theme is read first.
+
+**Pending.**
+- Search box for a new business (D-012): it would spend Apify credit, so it comes later with a small cap per search.
+
+**Update (2026-10-26): staff names in excerpts.** Some reviews mention shop staff by their first name. The author
+decided not to mask them: they are first names only, in reviews that are already public, with no surnames or other
+identifying data, and the app only shows short excerpts.
+
+---
+
 ## D-021 · Published model and PostgreSQL-ready database
 
 - **Date:** 2026-10-26
