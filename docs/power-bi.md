@@ -21,7 +21,10 @@ Power BI Desktop is free and runs on Windows. Menu names below are those of the 
 3. Credentials: tab **Base de datos**, user `impacto`, password `impacto`.
    If Power BI warns that the connection is not encrypted, accept connecting without encryption: the database only
    listens on this computer.
-4. In the **Navegador**, tick `public.review_facts` and press **Cargar**.
+4. In the **Navegador**, tick only `public.review_facts` and press **Cargar**. The view already joins the tables, so
+   the raw tables are not needed.
+5. Power BI names the table `public review_facts`. Rename it to `review_facts` (**Datos** pane, right click →
+   **Cambiar nombre**) so the measures below work as written.
 
 | Column | Meaning |
 |---|---|
@@ -37,12 +40,22 @@ Power BI Desktop is free and runs on Windows. Menu names below are those of the 
 
 ## 3. Measures
 
-**Modelado → Nueva medida**, one at a time:
+Each measure holds a single formula. For each line below: select `review_facts` in the **Datos** pane, press
+**Inicio → Nueva medida**, replace the text of the formula bar with the line and press Enter.
 
 ```dax
 Reseñas = COUNTROWS ( review_facts )
+```
+
+```dax
 Nota media = AVERAGE ( review_facts[stars] )
+```
+
+```dax
 % malas (modelo) = DIVIDE ( SUM ( review_facts[model_bad] ), COUNT ( review_facts[model_bad] ) )
+```
+
+```dax
 % 1-2 estrellas = DIVIDE ( SUM ( review_facts[low_stars] ), COUNTROWS ( review_facts ) )
 ```
 

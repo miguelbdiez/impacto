@@ -26,3 +26,6 @@ build/
 # Neural Designer projects (*.nd, already ignored above) stay local
 models/*
 !models/model_c/
+
+# Power BI report: a local learning exercise, not published (D-023)
+*.pbix
