@@ -1,0 +1,107 @@
+{
+  "Network": {
+    "Task": "TextClassification",
+    "TrainingActivationRecomputation": false,
+    "Inputs": {
+      "InputsNumber": 128,
+      "Input": [
+        {
+          "Index": 1,
+          "Text": "input_sequence",
+          "Role": "Input",
+          "Type": "Numeric",
+          "Scaler": "None",
+          "Features": 128
+        }
+      ]
+    },
+    "Layers": {
+      "LayersNumber": 4,
+      "Items": [
+        {
+          "Embedding": {
+            "Label": "embedding_layer",
+            "InputDimensions": "128 ",
+            "OutputDimensions": "128 64 ",
+            "Trainable": true,
+            "VocabularySize": 20000,
+            "ScaleEmbedding": true,
+            "AddPositionalEncoding": true,
+            "LearnedPositional": false,
+            "ExportValidLengths": false,
+            "WeightsFollowComputeDtype": false
+          }
+        },
+        {
+          "Pooling3d": {
+            "Label": "sequence_pooling_layer",
+            "InputDimensions": "128 64 ",
+            "OutputDimensions": "64 ",
+            "Trainable": true,
+            "PoolingMethod": "AveragePooling"
+          }
+        },
+        {
+          "Dense": {
+            "Label": "dense_layer_1",
+            "InputDimensions": "64 ",
+            "OutputDimensions": "64 ",
+            "Trainable": true,
+            "BatchNormalization": false,
+            "UseBias": true,
+            "Activation": "ReLU",
+            "Gated": false,
+            "TransposedInference": false
+          }
+        },
+        {
+          "Dense": {
+            "Label": "classification_layer",
+            "InputDimensions": "64 ",
+            "OutputDimensions": "1 ",
+            "Trainable": true,
+            "BatchNormalization": false,
+            "UseBias": true,
+            "Activation": "Sigmoid",
+            "Gated": false,
+            "TransposedInference": false
+          }
+        }
+      ],
+      "SourceLayers": {
+        "SourceLayer": [
+          {
+            "LayerIndex": 0,
+            "Text": "-1"
+          },
+          {
+            "LayerIndex": 1,
+            "Text": "0"
+          },
+          {
+            "LayerIndex": 2,
+            "Text": "1"
+          },
+          {
+            "LayerIndex": 3,
+            "Text": "2"
+          }
+        ]
+      },
+      "TiedWeights": []
+    },
+    "Outputs": {
+      "OutputsNumber": 1,
+      "Output": [
+        {
+          "Index": 1,
+          "Text": "target_sequence",
+          "Role": "Target",
+          "Type": "Binary",
+          "Scaler": "None",
+          "Categories": "bad;good"
+        }
+      ]
+    }
+  }
+}

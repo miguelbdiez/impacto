@@ -22,5 +22,7 @@ Thumbs.db
 # Build output (C++ inference)
 build/
 
-# Exported models: not published until decided (licence of the training data)
-models/
+# Models: the exported model (models/model_c/) is published (D-021); other exports and the frozen
+# Neural Designer projects (*.nd, already ignored above) stay local
+models/*
+!models/model_c/

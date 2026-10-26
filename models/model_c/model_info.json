@@ -1,0 +1,16 @@
+{
+  "source": "impacto_model_c.nd",
+  "sequence_length": 128,
+  "labels": [
+    "bad",
+    "good"
+  ],
+  "decision_threshold": 0.44,
+  "reserved_tokens": [
+    "[PAD]",
+    "[UNK]",
+    "[START]",
+    "[END]"
+  ],
+  "vocabulary_size": 20000
+}

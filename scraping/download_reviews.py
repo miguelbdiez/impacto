@@ -1,8 +1,8 @@
 """Download the Google Maps reviews of a place with Apify (decision D-017).
 
 Saves the reviews (without reviewer data) and a summary of the run, including its real cost, to
-data/reviews/. The defaults keep every run small and cheap; raise --max-reviews and
---max-charge-usd only if you are willing to use more Apify credit.
+data/reviews/. Import them afterwards with pipeline/import_reviews.py. The defaults keep every run small
+and cheap; raise --max-reviews and --max-charge-usd only if you are willing to use more Apify credit.
 
 Usage:
     uv run scraping/download_reviews.py --max-reviews 50 --max-charge-usd 0.2
@@ -13,11 +13,9 @@ with --run-id instead of starting a new one, which would be charged again.
 """
 
 import argparse
-import collections
 import json
-from datetime import datetime, timezone
-from pathlib import Path
 
+from impacto.pipeline import save_download
 from impacto.sources.apify import ApifyReviews
 
 # El Corte Inglés Princesa (Edificio Moda), Madrid (D-001 update)
@@ -32,7 +30,6 @@ def main() -> None:
     parser.add_argument("--since", default="2019-01-01", help="oldest publication date (YYYY-MM-DD)")
     parser.add_argument("--max-reviews", type=int, default=50)
     parser.add_argument("--max-charge-usd", type=float, default=0.2, help="maximum Apify charge for this run")
-    parser.add_argument("--output-dir", type=Path, default=Path("data/reviews"))
     parser.add_argument("--run-id", help="resume this run instead of starting a new one")
     args = parser.parse_args()
 
@@ -43,35 +40,11 @@ def main() -> None:
     else:
         print(f"Starting the Apify actor: up to {args.max_reviews} reviews since {args.since}, "
               f"at most ${args.max_charge_usd}")
-        run_id = client.start(args.place_url, args.since, args.max_reviews, args.max_charge_usd)["id"]
+        run_id = client.start(args.max_reviews, args.max_charge_usd, place_url=args.place_url,
+                              since=args.since)["id"]
         print(f"Run {run_id} started (resume it with --run-id {run_id} if this program stops)")
-    run = client.fetch(client.wait(run_id))
 
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    (args.output_dir / f"reviews_{stamp}.json").write_text(
-        json.dumps(run.reviews, ensure_ascii=False, indent=1), encoding="utf-8")
-
-    dates = sorted(review["publishedAtDate"] for review in run.reviews if review.get("publishedAtDate"))
-    with_text = sum(bool(review.get("text")) for review in run.reviews)
-    summary = {
-        "run_id": run.id,
-        "status": run.status,
-        "downloaded_at": stamp,
-        "place_url": args.place_url,
-        "since": args.since,
-        "reviews": len(run.reviews),
-        "with_text": with_text,
-        "cost_usd": run.cost_usd,
-        "cost_per_1000_reviews_usd": round(1000 * run.cost_usd / len(run.reviews), 3) if run.reviews else None,
-        "oldest": dates[0] if dates else None,
-        "newest": dates[-1] if dates else None,
-        "stars": dict(sorted(collections.Counter(review.get("stars") for review in run.reviews).items(),
-                             key=lambda pair: str(pair[0]))),
-        "languages": dict(collections.Counter(review.get("originalLanguage") for review in run.reviews).most_common()),
-        "fields": sorted({key for review in run.reviews for key in review}),
-    }
-    (args.output_dir / f"run_{stamp}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    summary = save_download(client.fetch(client.wait(run_id)), args.place_url, args.since)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 

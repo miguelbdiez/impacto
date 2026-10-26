@@ -744,6 +744,26 @@ prices…) and whether there are peaks around sales, Black Friday or Christmas.
 
 ---
 
+## D-021 · Published model and PostgreSQL-ready database
+
+- **Date:** 2026-10-26
+- **Status:** Accepted
+
+**Model.** `models/model_c/` (network, parameters, vocabulary and threshold, 5.3 MB) is now in the repository, so
+anyone can run the app and Docker without training a model. The weights and vocabulary are derived from the Amazon
+corpus, which allows non-commercial research use only; `models/model_c/README.md` says so and gives the model's
+results. The Neural Designer projects (`*.nd`) stay out: their reports include review texts.
+
+**Database.** `src/impacto/database.py` moved from `sqlite3` to SQLAlchemy. The same tables and queries run on
+**SQLite** (local, default) and **PostgreSQL** (Docker, set by `DATABASE_URL`); every insert is an upsert
+(`ON CONFLICT … DO UPDATE`), valid in both. A view, `review_facts`, gives Power BI one row per review; it has one
+version per engine because date functions differ, and in PostgreSQL its dates are real `timestamptz` and `date`
+types. Checked against a real PostgreSQL server (embedded `pgserver`, Python 3.12) before Docker was available.
+The download, import and classification steps now live in `src/impacto/pipeline.py`, shared by the scripts and the
+app.
+
+---
+
 ## Ideas for later
 
 - **Bad reviews vs. construction works (El Tormes).** Plot the share of bad reviews over time and mark the periods
