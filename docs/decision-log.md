@@ -648,6 +648,27 @@ except search engines. Technically easier, but more explicitly forbidden, so it 
   sized to fit the monthly credit, split over two months if needed.
 - The reviews go into a database (local first, D-018 to be written).
 
+**Update (2026-10-26): test run and full download.**
+- The actor has no "only reviews with text" option. Its keyword filter (`reviewsFilterString`) was discarded: it
+  would drop short reviews ("Genial", "Fatal") and bias the data. Reviews with stars only are kept: they count for
+  the star statistics, and only the texts in Spanish go through the model.
+- Test with 50 reviews (2 to 24 October 2026): every review has its exact date, 26 of 50 have text (22 Spanish,
+  3 English, 1 French), and no reviewer field arrives. Real free-plan price: **$0.0006 per review ($0.60 per
+  1,000)** plus $0.00005 per run start; the test cost $0.03. The account confirms plan FREE with a hard cap of $5 a
+  month (cycle 26 October to 25 November) and keeps results for 7 days only, so every download is saved locally.
+- Full download launched with `--since 2019-01-01 --max-reviews 7490 --max-charge-usd 4.50`, leaving ~$0.47 of
+  this month's credit for tests, as decided by the author.
+- **Incident:** while waiting for that run (`W4iERQ7BufPFqDKl5`), a network error (`IncompleteRead`) stopped the
+  local script. The run itself kept going on Apify's servers: it had 6,680 reviews and $4.01 charged when it was
+  found through the API. Starting a new run would have paid twice. The client was changed so that read requests are
+  retried after network errors, the start request is never retried, the run id is printed as soon as it starts,
+  results are downloaded in pages of 1,000, and `--run-id` resumes an existing run without paying again.
+- **Result:** 7,490 reviews for $4.49 (the review cap was reached). They go from **29 October 2021** to 24 October
+  2026: the shop receives more reviews than estimated (~1,500 a year), so the cap was reached before 2019.
+  Completing 2019–2021 is not possible within the free plan: the actor only goes from newest to oldest, so it would
+  have to download (and pay for) the last five years again. **The history used is therefore October 2021 to October
+  2026**, five years. New reviews arrive at about 2 a day (~$0.04 a month), so updates fit in the credit left.
+
 ---
 
 ## Ideas for later
